@@ -102,7 +102,7 @@ long_data = long_data %>%
   ungroup() %>% 
   group_by(State,Number,Label, nationwide) %>%
   reframe(Nationwide_tooltip = if_else(nationwide==T,
-                                       str_c("<br><b>National Organizations</b><br> <ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul><br>"),
+                                       str_c("<b>National Organizations</b><br> <ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul><br>"),
                                        NA),
           local_tooltip = if_else(nationwide==F,
                                   str_c("<br><b>Local and Regional Organizations </b><br> <ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul><br>"),
