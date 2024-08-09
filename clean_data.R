@@ -39,7 +39,8 @@ print("Formatting Data...")
 
 # set up df so there's 1 row per Organization
 long_data = raw_data %>% 
-  select(State, `Organization Name`, URL) %>% 
+  select(State, `Organization Name`, URL) %>%
+  mutate(nationwide = str_detect(State, 'Nationwide')) %>% 
   separate_rows(State, sep = "; ") %>% 
   filter(State != "Nationwide")
 
@@ -99,14 +100,25 @@ long_data = long_data %>%
   group_by(State) %>% 
   arrange(`Organization Name`) %>% 
   ungroup() %>% 
-  group_by(State,Number,Label) %>%
+  group_by(State,Number,Label, nationwide) %>%
+  reframe(Nationwide_tooltip = if_else(nationwide==T,
+                                       str_c("<br><b>National Organizations</b><br> <ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul><br>"),
+                                       NA),
+          local_tooltip = if_else(nationwide==F,
+                                  str_c("<br><b>Local and Regional Organizations </b><br> <ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul><br>"),
+                                  NA)) %>% 
+  fill(Nationwide_tooltip, .direction = 'up') %>% 
+  fill(local_tooltip, .direction = 'down') %>% 
+  ungroup() %>% 
+  group_by(State, Number, Label) %>% 
   reframe(
     Tooltip = paste(glue('{State} has the following {Number} climate action organizations collaborating with CECF <br>'),
-                    str_c("<ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul>"))
+                    paste(local_tooltip, Nationwide_tooltip))
   ) %>% 
   mutate(Tooltip = if_else(Number==0, NA, Tooltip)) %>% 
     select(State,Number,Label,Tooltip) %>% 
-    unique()
+    unique() %>% 
+  filter(State != 'http://')
 
 print("Data Formatted")
 
