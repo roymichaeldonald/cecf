@@ -104,10 +104,10 @@ long_data = long_data %>%
   reframe(Nationwide_tooltip = if_else(nationwide==T,
                                        paste(glue('<b>National organizations with community partnerships or local chapters in {State}</b>'),
                                              str_c("<ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul><br>")),
-                                       NA),
+                                       ""),
           local_tooltip = if_else(nationwide==F,
                                   str_c("<br><b>Local and Regional Organizations </b><br> <ul>", paste0("<li>", paste0('<a href="', URL, '">', `Organization Name`, '</a>'), "</li><br>", collapse = ""), "</ul><br>"),
-                                  NA)) %>% 
+                                  "")) %>% 
   ungroup() %>% 
   group_by(State) %>% 
   fill(Nationwide_tooltip, .direction = 'up') %>% 
