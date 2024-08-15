@@ -43,8 +43,15 @@ long_data = raw_data %>%
   mutate(nationwide = str_detect(State, 'Nationwide'),
          URL = if_else(substr(URL,1,4)!='http',
                        paste0('https://',URL),
-                       URL)) %>% 
-  separate_rows(State, sep = "; ") %>% 
+                       URL),
+         State = str_replace_all(State, "; ", ";")) %>% 
+  mutate(State = str_replace_all(State, ", ",";")) %>% 
+  mutate(State = str_replace_all(State,",",";")) %>% 
+  separate_rows(State, sep = ";") %>% 
+  mutate(State = if_else(State == 'Washington DC', 'District of Columbia', State)) %>% 
+  mutate(State = if_else(State == 'Washington D.C', 'District of Columbia', State)) %>% 
+  mutate(State = if_else(State == 'Washington D.C.', 'District of Columbia', State)) %>% 
+  mutate(State = if_else(State == 'Pennslyvannia', 'Pennsylvania',State)) %>% 
   filter(State != "Nationwide")
 
 # Count number of Organizations per state
