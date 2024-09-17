@@ -128,7 +128,7 @@ long_data = long_data %>%
   mutate(combo_tooltip = paste(local_tooltip, Nationwide_tooltip)) %>% 
   group_by(State, Number, Label) %>% 
   reframe(
-    Tooltip = paste(glue('{State} has the following {Number} climate action organizations collaborating with CECF <br>'),
+    Tooltip = paste(glue('{State} has the following {Number} community-serving organizations organizations collaborating with CECF <br>'),
                     combo_tooltip)
   ) %>% 
   mutate(Tooltip = if_else(Number==0, NA, Tooltip)) %>% 
